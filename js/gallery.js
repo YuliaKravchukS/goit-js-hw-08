@@ -70,6 +70,9 @@ const images = [
 
 const list = document.querySelector('.gallery');
 list.addEventListener('click', onListClick)
+const link = document.querySelector('.gallery-link');
+
+
 const markup = images
 .map(
     ({preview, original, description})=>
@@ -91,13 +94,42 @@ list.insertAdjacentHTML('beforeend',markup);
 
 
 function onListClick(event) {
-    event.preventDefault();
-    if (event.target.nodeName !== 'IMG') {
+  event.preventDefault();
+  const clickElement = event.target;
+    if (clickElement.nodeName !== 'IMG') {
         return;
     }
-    const link=document.querySelector('.gallery-link')
-    console.log(link.href);
+  const largeImgSelected = clickElement.dataset.source;
+  openModal(largeImgSelected);
+}
+
+let modalInstance = null;
+
+
+function openModal(source) {
+  const instance = basicLightbox.create(`
+    <img src="${source}" width="1112" height="640">
+`);
+
+  instance.show();
+  modalInstance = instance;
+
+  document.addEventListener('keydown', onKeyPress);
+}
+
+function onKeyPress(event) {
+  if (event.code === "Escape") {
+    closeAndDestroyModal();
+  };
+
 }
 
 
-
+function closeAndDestroyModal() {
+  if(modalInstance) {
+    modalInstance.close();
+    modalInstance = null;
+  }
+  
+  document.removeEventListener('keydown', onKeyPress)
+}
