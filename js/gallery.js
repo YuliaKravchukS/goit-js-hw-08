@@ -69,8 +69,8 @@ const images = [
 
 
 const list = document.querySelector('.gallery');
-list.addEventListener('click', onListClick)
-const link = document.querySelector('.gallery-link');
+list.addEventListener('click', onListClick);
+
 
 
 const markup = images
@@ -100,36 +100,16 @@ function onListClick(event) {
         return;
     }
   const largeImgSelected = clickElement.dataset.source;
-  openModal(largeImgSelected);
-}
-
-let modalInstance = null;
-
-
-function openModal(source) {
   const instance = basicLightbox.create(`
-    <img src="${source}" width="1112" height="640">
+    <img src="${largeImgSelected}" width="1112" height="640">
 `);
 
-  instance.show();
-  modalInstance = instance;
+instance.show();
 
-  document.addEventListener('keydown', onKeyPress);
-}
 
-function onKeyPress(event) {
+document.addEventListener('keydown', (event=>{
   if (event.code === "Escape") {
-    closeAndDestroyModal();
+    instance.close();
   };
-
-}
-
-
-function closeAndDestroyModal() {
-  if(modalInstance) {
-    modalInstance.close();
-    modalInstance = null;
-  }
-  
-  document.removeEventListener('keydown', onKeyPress)
-}
+}));
+};
