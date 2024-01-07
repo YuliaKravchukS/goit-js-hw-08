@@ -95,21 +95,35 @@ list.insertAdjacentHTML('beforeend',markup);
 
 function onListClick(event) {
   event.preventDefault();
+
   const clickElement = event.target;
-    if (clickElement.nodeName !== 'IMG') {
-        return;
-    }
+  if (clickElement.nodeName !== 'IMG') {
+    return;
+  }
+
   const largeImgSelected = clickElement.dataset.source;
-  const instance = basicLightbox.create(`
-    <img src="${largeImgSelected}" width="1112" height="640">
-`);
 
-instance.show();
-
-
-document.addEventListener('keydown', (event=>{
-  if (event.code === "Escape") {
-    instance.close();
+  const closeOnEscape = (event) => {
+    if (event.code === 'Escape') {
+      instance.close();
+    }
   };
-}));
-};
+
+  const addEventListeners = () => {
+    document.addEventListener('keydown', closeOnEscape);
+  };
+
+  const removeEventListeners = () => {
+    document.removeEventListener('keydown', closeOnEscape);
+  };
+
+  const instance = basicLightbox.create(
+    `<img src="${largeImgSelected}" width="1112" height="640">`,
+    {
+      onShow: addEventListeners,
+      onClose: removeEventListeners,
+    }
+  );
+
+  instance.show();
+}
